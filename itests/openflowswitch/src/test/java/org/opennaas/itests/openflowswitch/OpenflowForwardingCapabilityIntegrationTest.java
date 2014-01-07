@@ -253,6 +253,67 @@ public class OpenflowForwardingCapabilityIntegrationTest {
 		createDeleteGetPerformAndCheck(capabilityWSClient);
 	}
 
+	@Test
+	public void createFlowWithIPWSTest() throws Exception {
+
+		IOpenflowForwardingCapability capability = InitializerTestHelper.createRestClient(WS_URI, IOpenflowForwardingCapability.class, null,
+				WS_USERNAME, WS_PASSWORD);
+
+		FloodlightOFFlow flowWithIP = generateSampleFloodlightOFFlow("flow1", "1", "dstPort=12");
+		flowWithIP.getMatch().setSrcIp("192.168.1.10");
+		flowWithIP.getMatch().setDstIp("192.168.1.11");
+		flowWithIP.getMatch().setEtherType("2048");
+
+		capability.createOpenflowForwardingRule(flowWithIP);
+
+		// TODO check floodlight receives expected message
+
+		FloodlightOFFlow allocated = null;
+		for (FloodlightOFFlow flow : capability.getOpenflowForwardingRules()) {
+			if (flow.getName().equals(flowWithIP.getName())) {
+				allocated = flow;
+			}
+		}
+		Assert.assertNotNull("Created rule must be returned by getOpenflowForwardingRules", allocated);
+
+		Assert.assertEquals(flowWithIP.getMatch().getSrcIp(), allocated.getMatch().getSrcIp());
+		Assert.assertEquals(flowWithIP.getMatch().getDstIp(), allocated.getMatch().getDstIp());
+		Assert.assertEquals(flowWithIP.getMatch().getEtherType(), allocated.getMatch().getEtherType());
+		Assert.assertEquals(flowWithIP, allocated);
+	}
+
+	@Test
+	public void createFlowWithIPAndTOSWSTest() throws Exception {
+
+		IOpenflowForwardingCapability capability = InitializerTestHelper.createRestClient(WS_URI, IOpenflowForwardingCapability.class, null,
+				WS_USERNAME, WS_PASSWORD);
+
+		FloodlightOFFlow flowWithIP = generateSampleFloodlightOFFlow("flow1", "1", "dstPort=12");
+		flowWithIP.getMatch().setSrcIp("192.168.1.10");
+		flowWithIP.getMatch().setDstIp("192.168.1.11");
+		flowWithIP.getMatch().setTosBits("4");
+		flowWithIP.getMatch().setEtherType("2048");
+
+		capability.createOpenflowForwardingRule(flowWithIP);
+
+		// TODO check floodlight receives expected message
+
+		FloodlightOFFlow allocated = null;
+		for (FloodlightOFFlow flow : capability.getOpenflowForwardingRules()) {
+			if (flow.getName().equals(flowWithIP.getName())) {
+				allocated = flow;
+			}
+		}
+		Assert.assertNotNull("Created rule must be returned by getOpenflowForwardingRules", allocated);
+
+		Assert.assertEquals(flowWithIP.getMatch().getSrcIp(), allocated.getMatch().getSrcIp());
+		Assert.assertEquals(flowWithIP.getMatch().getDstIp(), allocated.getMatch().getDstIp());
+		Assert.assertEquals(flowWithIP.getMatch().getTosBits(), allocated.getMatch().getTosBits());
+		Assert.assertEquals(flowWithIP.getMatch().getEtherType(), allocated.getMatch().getEtherType());
+		Assert.assertEquals(flowWithIP, allocated);
+
+	}
+
 	private void createDeleteGetPerformAndCheck(IOpenflowForwardingCapability capability) throws Exception {
 
 		FloodlightOFFlow forwardingRule1 = generateSampleFloodlightOFFlow("flow1", "1", "dstPort=12");
