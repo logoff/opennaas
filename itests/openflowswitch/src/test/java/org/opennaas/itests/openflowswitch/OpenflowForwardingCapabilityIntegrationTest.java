@@ -51,8 +51,6 @@ import org.ops4j.pax.exam.spi.reactors.EagerSingleStagedReactorFactory;
 import org.ops4j.pax.exam.util.Filter;
 import org.osgi.service.blueprint.container.BlueprintContainer;
 
-//import static org.opennaas.itests.helpers.OpennaasExamOptions.openDebugSocket;
-
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(EagerSingleStagedReactorFactory.class)
 public class OpenflowForwardingCapabilityIntegrationTest {
@@ -260,6 +258,7 @@ public class OpenflowForwardingCapabilityIntegrationTest {
 				WS_USERNAME, WS_PASSWORD);
 
 		FloodlightOFFlow flowWithIP = generateSampleFloodlightOFFlow("flow1", "1", "dstPort=12");
+		flowWithIP.setSwitchId(SWITCH_ID);
 		flowWithIP.getMatch().setSrcIp("192.168.1.10");
 		flowWithIP.getMatch().setDstIp("192.168.1.11");
 		flowWithIP.getMatch().setEtherType("2048");
@@ -289,6 +288,7 @@ public class OpenflowForwardingCapabilityIntegrationTest {
 				WS_USERNAME, WS_PASSWORD);
 
 		FloodlightOFFlow flowWithIP = generateSampleFloodlightOFFlow("flow1", "1", "dstPort=12");
+		flowWithIP.setSwitchId(SWITCH_ID);
 		flowWithIP.getMatch().setSrcIp("192.168.1.10");
 		flowWithIP.getMatch().setDstIp("192.168.1.11");
 		flowWithIP.getMatch().setTosBits("4");
